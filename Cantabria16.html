@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantabria Infinita: Historia, Cultura y Turismo</title>
+    <meta name="description" content="Explora la esencia de Cantabria: desde las cuevas de Altamira hasta los Picos de Europa. Historia, gastronomía y rutas turísticas.">
+
+    <!-- SEO Social (Open Graph / Facebook / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tudominio.com/">
+    <meta property="og:title" content="Cantabria Infinita: Un Viaje por la Tierruca">
+    <meta property="og:description" content="Descubre la historia, los mitos y los sabores de Cantabria en esta guía interactiva completa.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1599839624912-67609f24e2d1?auto=format&fit=crop&q=80&w=1200">
+
+    <!-- SEO Social (Twitter) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cantabria Infinita">
+    <meta name="twitter:description" content="Explora Cantabria: Historia, Cultura y Turismo en un solo lugar.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1599839624912-67609f24e2d1?auto=format&fit=crop&q=80&w=1200">
+
+    <!-- Datos Estructurados (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "Cantabria Infinita Interactive",
+      "description": "Guía turística y cultural interactiva sobre la Comunidad Autónoma de Cantabria.",
+      "url": "https://tudominio.com",
+      "image": "https://images.unsplash.com/photo-1599839624912-67609f24e2d1?auto=format&fit=crop&q=80&w=1200",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Santander",
+        "addressRegion": "Cantabria",
+        "addressCountry": "ES"
+      }
+    }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fafaf9; color: #1c1917; overflow-x: hidden; }
+        
+        /* Efecto Persiana Slow (Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.21, 0.45, 0.32, 0.9);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            height: 350px; 
+            margin-top: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container { height: 450px; }
+        }
+        
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-active { background-color: #047857; color: white; border-color: #047857; }
+        .tab-inactive { background-color: white; color: #374151; border-color: #d1d5db; }
+        .tab-inactive:hover { background-color: #f3f4f6; }
+
+        /* Nuevo estilo para el Hero con Parallax */
+		#hero-header {
+			/* Añadimos un gradiente para oscurecer un poco la imagen y que el texto blanco sea legible */
+			background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url('assets/img/cantabria-infinita.png');
+			
+			/* Propiedades clave para el efecto Parallax */
+			background-attachment: fixed;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			
+			position: relative;
+			overflow: hidden;
+		}
+
+		/* Opcional: Soporte para móviles (iOS a veces tiene problemas con background-attachment: fixed) */
+		@supports (-webkit-touch-callout: none) {
+			#hero-header {
+				background-attachment: scroll;
+			}
+		}
+
+        .content-align { text-align: left; }
+
+        .food-card { transition: all 0.3s ease; }
+        .food-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(0,0,0,0.15); }
+
+        /* Estilo Botón Spotify */
+        .spotify-btn {
+            background-color: #1DB954;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .spotify-btn:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px -5px rgba(29, 185, 84, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #059669; border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl">⛰️</span>
+                    <span class="font-bold text-xl text-stone-800 tracking-tight">Cantabria <span class="text-emerald-700">Infinita</span></span>
+                </div>
+                
+                <button id="hamburger-btn" class="text-stone-600 hover:text-emerald-700 focus:outline-none p-2 flex items-center gap-2">
+                    <span class="hidden sm:inline font-medium text-sm uppercase tracking-widest">Explorar Menú</span>
+                    <span id="hamburger-icon" class="text-2xl">☰</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden bg-white border-t border-stone-200 shadow-xl">
+            <div class="max-w-6xl mx-auto px-4 pt-4 pb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="#historia" class="block px-6 py-4 text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 rounded-xl font-bold transition-all border border-transparent hover:border-emerald-100">
+                    <span class="block text-xs uppercase text-emerald-600/50 mb-1">01. Pasado</span>
+                    Historia y Guerras Cántabras
+                </a>
+                <a href="#demografia" class="block px-6 py-4 text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 rounded-xl font-bold transition-all border border-transparent hover:border-emerald-100">
+                    <span class="block text-xs uppercase text-emerald-600/50 mb-1">02. Territorio</span>
+                    Población y Comarcas
+                </a>
+                <a href="#turismo" class="block px-6 py-4 text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 rounded-xl font-bold transition-all border border-transparent hover:border-emerald-100">
+                    <span class="block text-xs uppercase text-emerald-600/50 mb-1">03. Destinos</span>
+                    Turismo y Naturaleza
+                </a>
+                <a href="#gastronomia" class="block px-6 py-4 text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 rounded-xl font-bold transition-all border border-transparent hover:border-emerald-100">
+                    <span class="block text-xs uppercase text-emerald-600/50 mb-1">04. Paladar</span>
+                    Sabores de la Tierruca
+                </a>
+                <a href="#cultura" class="block px-6 py-4 text-stone-600 hover:bg-emerald-50 hover:text-emerald-800 rounded-xl font-bold transition-all border border-transparent hover:border-emerald-100">
+                    <span class="block text-xs uppercase text-emerald-600/50 mb-1">05. Esencia</span>
+                    Identidad, Mitos y Tradiciones
+                </a>
+                <a href="#contacto-footer" class="block px-6 py-4 text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl font-bold transition-all hover:bg-emerald-100">
+                    <span class="block text-xs uppercase text-emerald-600/50 mb-1">06. Contacto</span>
+                    Habla con nosotros
+                </a>
+            </div>
+        </div>
+    </nav>
+
+<header id="hero-header" class="relative flex items-center justify-center min-h-screen">
+    <div class="max-w-6xl mx-auto relative z-10 text-white content-align px-4 sm:px-6 lg:px-8 py-32 md:py-48 reveal">
+        <h1 class="text-6xl md:text-9xl font-extrabold mb-8 tracking-tighter drop-shadow-2xl max-w-5xl leading-none">
+            Cantabria <br><span class="text-emerald-400">Infinita</span>
+        </h1>
+        
+        <p class="text-xl md:text-3xl font-light text-stone-100 mb-12 leading-relaxed drop-shadow-lg max-w-3xl">
+            Tierra de mar, montaña y cuevas milenarias. Un viaje interactivo por la esencia del norte de España, desde Altamira hasta el presente.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-6">
+            <a href="#historia" class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-5 px-12 rounded-full shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 text-center border border-emerald-400/30 text-lg">
+                Comenzar el Viaje
+            </a>
+            <a href="#turismo" class="inline-block bg-white/10 backdrop-blur-md hover:bg-white/20 text-white font-bold py-5 px-12 rounded-full shadow-2xl transition-all text-center border border-white/30 text-lg">
+                Ver Destinos
+            </a>
+        </div>
+    </div>
+</header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-32">
+
+        <!-- SECCIÓN: HISTORIA -->
+        <section id="historia" class="scroll-mt-24 reveal">
+            <div class="mb-12 content-align max-w-4xl">
+                <span class="text-emerald-600 font-bold uppercase tracking-widest text-sm">Cronología Regional</span>
+                <h2 class="text-4xl md:text-5xl font-black text-stone-800 mt-3 mb-6">Historia y Legado</h2>
+                <p class="text-stone-600 text-lg leading-relaxed">
+                    Cantabria no se entiende sin su resistencia. Desde el arte rupestre más importante del mundo hasta la defensa numantina ante las legiones de Augusto, cada etapa ha forjado el carácter independiente y noble de sus gentes.
+                </p>
+            </div>
+            <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-6 md:p-12 flex flex-col md:flex-row gap-12 items-stretch">
+                <div class="w-full md:w-1/3 flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-visible pb-4 md:pb-0" id="timeline-nav">
+                    <!-- Nav dynamically populated -->
+                </div>
+                <div class="w-full md:w-2/3 bg-stone-50 rounded-2xl p-8 md:p-12 min-h-[450px] border border-stone-200 transition-all duration-500" id="timeline-content">
+                    <div class="text-5xl mb-6" id="tl-icon">🦌</div>
+                    <h3 class="text-3xl font-black text-emerald-900 mb-6" id="tl-title">Prehistoria</h3>
+                    <div class="text-stone-700 leading-relaxed text-lg space-y-6 content-align" id="tl-text">
+                        <!-- Content dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: DEMOGRAFÍA -->
+        <section id="demografia" class="scroll-mt-24 reveal">
+            <div class="mb-12 content-align">
+                <span class="text-emerald-600 font-bold uppercase tracking-widest text-sm">Territorio y Sociedad</span>
+                <h2 class="text-4xl md:text-5xl font-black text-stone-800 mt-3 mb-6">Ciudades y Distribución</h2>
+            </div>
+            <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-8 md:p-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="content-align space-y-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-stone-800 mb-4">El eje de la población</h3>
+                            <p class="text-stone-600 text-lg">
+                                Con una población cercana a los 585.000 habitantes, Cantabria presenta un fuerte contraste entre la costa urbana y el interior rural. El "Arco de la Bahía" (Santander y alrededores) concentra la mayoría de servicios.
+                            </p>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-start bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
+                                <span class="text-3xl mr-4">⚓</span>
+                                <div>
+                                    <strong class="block text-emerald-900 text-lg">Santander: La Capital</strong>
+                                    <p class="text-emerald-800/80">Eje administrativo y cultural, famosa por la Bahía de Santander, una de las más bellas del mundo.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start bg-stone-50 p-6 rounded-2xl border border-stone-200">
+                                <span class="text-3xl mr-4">🏭</span>
+                                <div>
+                                    <strong class="block text-stone-800 text-lg">Torrelavega: Corazón Industrial</strong>
+                                    <p class="text-stone-600">Importante nudo de comunicaciones y centro comercial e industrial del Besaya.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start bg-stone-50 p-6 rounded-2xl border border-stone-200">
+                                <span class="text-3xl mr-4">🌊</span>
+                                <div>
+                                    <strong class="block text-stone-800 text-lg">Villas Marineras</strong>
+                                    <p class="text-stone-600">Castro Urdiales (tercera ciudad), Laredo y Santoña definen la identidad costera oriental.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-stone-50 p-6 rounded-3xl border border-stone-200">
+                        <div class="chart-container">
+                            <canvas id="populationChart"></canvas>
+                        </div>
+                        <p class="text-center text-sm text-stone-500 mt-6 italic">Población por municipios (datos en miles de habitantes).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: TURISMO -->
+        <section id="turismo" class="scroll-mt-24 reveal">
+            <div class="mb-12 content-align">
+                <span class="text-emerald-600 font-bold uppercase tracking-widest text-sm">Guía de Viaje</span>
+                <h2 class="text-4xl md:text-5xl font-black text-stone-800 mt-3 mb-6">Destinos Imprescindibles</h2>
+                <p class="text-stone-600 text-lg max-w-3xl">Desde playas de arena blanca y surf hasta cumbres de más de 2.500 metros en los Picos de Europa.</p>
+            </div>
+            <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-8 md:p-12">
+                <div class="flex flex-wrap justify-start gap-3 mb-12" id="tour-filters">
+                    <button class="tab-btn tab-active px-8 py-3 rounded-full font-bold text-sm border shadow-sm" data-filter="all">Todos los Destinos</button>
+                    <button class="tab-btn tab-inactive px-8 py-3 rounded-full font-bold text-sm border shadow-sm" data-filter="veraneo">Playa y Veraneo</button>
+                    <button class="tab-btn tab-inactive px-8 py-3 rounded-full font-bold text-sm border shadow-sm" data-filter="naturaleza">Naturaleza Salvaje</button>
+                    <button class="tab-btn tab-inactive px-8 py-3 rounded-full font-bold text-sm border shadow-sm" data-filter="cultura">Pueblos y Patrimonio</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="tour-grid">
+                    <!-- Grid dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: GASTRONOMÍA -->
+        <section id="gastronomia" class="scroll-mt-24 reveal">
+            <div class="mb-12 content-align">
+                <span class="text-emerald-600 font-bold uppercase tracking-widest text-sm">Experiencia Culinaria</span>
+                <h2 class="text-4xl md:text-5xl font-black text-stone-800 mt-3 mb-6">Sabores de Cantabria</h2>
+                <p class="text-stone-600 text-lg">Donde la montaña se encuentra con el mar, surge una cocina contundente y de producto excelente.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="food-card bg-white rounded-3xl border border-stone-200 p-10">
+                    <div class="content-align">
+                        <span class="text-5xl mb-6 block">🍲</span>
+                        <h3 class="text-2xl font-black text-stone-800 mb-4 uppercase">Cocido Montañés</h3>
+                        <p class="text-stone-600 leading-relaxed mb-4">A diferencia del lebaniego, este no lleva garbanzos sino <strong>alubia blanca</strong>. Se acompaña de berza, chorizo, costilla, morcilla y tocino (el compango). Es el plato rey de los valles del Saja y Besaya.</p>
+                    </div>
+                </div>
+                <div class="food-card bg-white rounded-3xl border border-stone-200 p-10">
+                    <div class="content-align">
+                        <span class="text-5xl mb-6 block">🐟</span>
+                        <h3 class="text-2xl font-black text-stone-800 mb-4 uppercase">Anchoas de Santoña</h3>
+                        <p class="text-stone-600 leading-relaxed mb-4">Consideradas las mejores del mundo. Se elaboran artesanalmente mediante la técnica del "sobado a mano", retirando piel y espinas una a una para obtener filetes perfectos en aceite de oliva.</p>
+                    </div>
+                </div>
+                <div class="food-card bg-white rounded-3xl border border-stone-200 p-10">
+                    <div class="content-align">
+                        <span class="text-5xl mb-6 block">🍰</span>
+                        <h3 class="text-2xl font-black text-stone-800 mb-4 uppercase">Sobaos y Quesadas</h3>
+                        <p class="text-stone-600 leading-relaxed mb-4">Originarios de los Valles Pasiegos. El <strong>Sobao Pasiego</strong> destaca por su intenso sabor a mantequilla de alta calidad, mientras que la <strong>Quesada</strong> es un postre a base de leche cuajada, harina y azúcar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CULTURA -->
+        <section id="cultura" class="scroll-mt-24 reveal">
+            <div class="mb-12 content-align">
+                <span class="text-emerald-600 font-bold uppercase tracking-widest text-sm">Identidad y Tradición</span>
+                <h2 class="text-4xl md:text-5xl font-black text-stone-800 mt-3 mb-6">Cultura y Mitología</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="bg-white rounded-3xl shadow-xl border border-stone-100 p-4 overflow-hidden">
+                    <button class="w-full text-left px-8 py-6 font-black text-xl flex justify-between items-center hover:bg-stone-50 transition-colors" onclick="toggleAccordion('acc1', 'icon1')">
+                        <span>🎭 El Carácter Cántabro</span> <span id="icon1" class="text-emerald-600">+</span>
+                    </button>
+                    <div id="acc1" class="hidden px-8 pb-8 text-stone-700 text-lg leading-relaxed content-align">
+                        <p class="mb-4">El cántabro es por definición noble, franco y extremadamente apegado a su geografía (la "tierruca"). Existe un fuerte sentimiento de identidad ligado a la dureza del clima y la orografía.</p>
+                        <p>Las fiestas populares, como <strong>La Vijanera</strong> en Silió (el primer carnaval del año en Europa), muestran este carácter ancestral.</p>
+                    </div>
+                    
+                    <button class="w-full text-left px-8 py-6 font-black text-xl flex justify-between items-center hover:bg-stone-50 border-t border-stone-100 transition-colors" onclick="toggleAccordion('acc2', 'icon2')">
+                        <span>🎳 Deportes y Juegos</span> <span id="icon2" class="text-emerald-600">+</span>
+                    </button>
+                    <div id="acc2" class="hidden px-8 pb-8 text-stone-700 text-lg leading-relaxed content-align">
+                        <p class="mb-4">El <strong>Bolo Palma</strong> es el deporte vernáculo por excelencia, con una complejidad técnica asombrosa y gran presencia en todas las plazas de los pueblos.</p>
+                        <p>También destacan las <strong>Regatas de Traineras</strong>, que evocan el pasado ballenero de la costa y la rivalidad entre las villas marineras del Cantábrico.</p>
+                    </div>
+
+                    <button class="w-full text-left px-8 py-6 font-black text-xl flex justify-between items-center hover:bg-stone-50 border-t border-stone-100 transition-colors" onclick="toggleAccordion('acc3', 'icon3')">
+                        <span>👹 Mitología</span> <span id="icon3" class="text-emerald-600">+</span>
+                    </button>
+                    <div id="acc3" class="hidden px-8 pb-8 text-stone-700 text-lg leading-relaxed content-align">
+                        <p>Rica en seres fantásticos vinculados a la naturaleza:</p>
+                        <ul class="list-disc list-inside mt-2 space-y-2">
+                            <li><strong>El Ojáncanu:</strong> Gigante de un solo ojo que personifica el mal.</li>
+                            <li><strong>Las Anjanas:</strong> Hadas buenas que cuidan los bosques y ríos.</li>
+                            <li><strong>El Trenti:</strong> Duende travieso que vive en los matorrales.</li>
+                            <li><strong>El Culebre:</strong> Serpiente gigante que custodia tesoros.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-emerald-900 rounded-3xl p-12 text-white flex items-center shadow-2xl relative overflow-hidden">
+                    <div class="absolute -right-20 -bottom-20 opacity-10 rotate-12">
+                        <span class="text-[200px]">🎶</span>
+                    </div>
+                    <div class="content-align relative z-10 w-full">
+                        <div class="text-7xl mb-8">🎶</div>
+                        <h3 class="text-4xl font-black mb-6">Música y Folclore</h3>
+                        <p class="text-emerald-200 text-xl font-light leading-relaxed mb-6">
+                            Los sonidos de Cantabria están marcados por la <strong>Gaita Cántabra</strong>, el <strong>Rabel</strong> (instrumento de cuerda frotada de origen pastoril) y el <strong>Pitu Montañés</strong>.
+                        </p>
+                        <p class="text-emerald-50 text-lg mb-8">
+                            Mención especial merecen las <strong>Marzas</strong> (cantos de bienvenida a la primavera) y los <strong>Picayos</strong> (danzas religiosas al ritmo de panderetas).
+                        </p>
+                        
+                        <!-- Botón Spotify Integrado -->
+                        <a href="https://open.spotify.com/playlist/1C8uOnFGE3OVjyuB9le6lo?si=9fb385a7f95242de" target="_blank" class="spotify-btn inline-flex items-center gap-4 px-8 py-4 rounded-full text-white font-bold transition-all shadow-xl group">
+                            <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.306c-.215.353-.674.464-1.026.25-2.855-1.745-6.449-2.14-10.682-1.171-.403.093-.807-.156-.899-.558-.092-.403.156-.807.558-.899 4.636-1.06 8.599-.606 11.799 1.349.352.214.463.673.25 1.029zm1.469-3.264c-.27.441-.845.578-1.286.308-3.27-2.01-8.253-2.593-12.118-1.42-.496.15-1.021-.128-1.171-.624-.15-.496.128-1.021.624-1.171 4.417-1.34 9.904-.687 13.653 1.62.441.27.578.845.308 1.287zm.127-3.414C15.228 8.212 8.798 8 5.031 9.143c-.58.176-1.192-.156-1.368-.736-.176-.58.156-1.192.736-1.368 4.305-1.306 11.411-1.065 15.86 1.576.522.31.693.985.383 1.507-.31.522-.985.693-1.507.383z"/>
+                            </svg>
+                            <div class="text-left">
+                                <span class="block text-xs uppercase opacity-80 tracking-widest font-black">Escuchar en Spotify</span>
+                                <span class="text-lg">Playlist 'Folk Cantabru'</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto-footer" class="bg-stone-900 text-stone-500 py-20 scroll-mt-24">
+        <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-12 text-left">
+            <div>
+                <span class="font-bold text-white text-xl block mb-6">Cantabria Infinita</span>
+                <p class="text-stone-400">Una guía interactiva dedicada a preservar y difundir el patrimonio de Cantabria, desde sus cuevas paleolíticas hasta sus modernas instituciones.</p>
+                <div class="mt-8 text-stone-300">
+                    <p class="text-sm font-bold uppercase tracking-widest text-emerald-500 mb-2">Contacto Webmaster</p>
+                    <p class="font-medium text-white mb-1">Daniela García</p>
+                    <a href="mailto:daniela.garcia.paniagua@campuscesine.com" class="text-emerald-400 hover:underline text-sm break-all block mb-2">daniela.garcia.paniagua@campuscesine.com</a>
+                    <a href="tel:+34644505239" class="text-stone-300 hover:text-emerald-400 transition-colors text-sm font-bold">+34 644 505 239</a>
+                </div>
+            </div>
+            <div>
+                <span class="font-bold text-white text-lg block mb-6">Secciones</span>
+                <ul class="space-y-3">
+                    <li><a href="#historia" class="hover:text-emerald-400 transition-colors">Historia de la Tierruca</a></li>
+                    <li><a href="#turismo" class="hover:text-emerald-400 transition-colors">Destinos Turísticos</a></li>
+                    <li><a href="#gastronomia" class="hover:text-emerald-400 transition-colors">Gastronomía Popular</a></li>
+                    <li><a href="#cultura" class="hover:text-emerald-400 transition-colors">Mitología y Tradiciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <span class="font-bold text-white text-lg block mb-6">Legal</span>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">Aviso Legal</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">Política de Privacidad</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">Política de Cookies</a></li>
+                </ul>
+                <div class="mt-6 text-2xl flex gap-4">
+                    <span>🏔️</span><span>🌊</span><span>⛵</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-16 pt-8 border-t border-stone-800 text-center text-xs uppercase tracking-widest px-4">
+            <p>&copy; 2026 Daniela García - Cantabria Infinita Interactive. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Efecto Persiana Reveal
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+
+        // Menu Hamburguesa Logic
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+
+        hamburgerBtn.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            hamburgerIcon.textContent = isHidden ? '✕' : '☰';
+        });
+
+        // Cerrar menú móvil al hacer click en un enlace
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                hamburgerIcon.textContent = '☰';
+            });
+        });
+
+        // Expanded History Data
+        const historyData = [
+            { 
+                id: 'pre', 
+                icon: '🦌', 
+                label: 'Prehistoria', 
+                title: 'La Capilla Sixtina del Arte Rupestre', 
+                text: `<p>Cantabria posee la mayor densidad de cuevas con arte rupestre del Paleolítico. La <strong>Cueva de Altamira</strong> (Patrimonio de la Humanidad) es el exponente máximo, con polícromos de bisontes que datan de hace 15.000 años.</p>
+                       <p>Otras cuevas como El Castillo, Las Monedas o El Pendo confirman que la región fue uno de los refugios climáticos más importantes de la Edad de Hielo.</p>` 
+            },
+            { 
+                id: 'rom', 
+                icon: '⚔️', 
+                label: 'Guerras Cántabras', 
+                title: 'Resistencia ante el Imperio (29-19 a.C.)', 
+                text: `<p>Fue la última región de Hispania en ser sometida. El propio emperador <strong>Octavio Augusto</strong> tuvo que trasladarse al frente para dirigir las operaciones contra las tribus cántabras.</p>
+                       <p>Destaca la figura mítica de <strong>Corocotta</strong>, un líder guerrero tan audaz que, según cuenta la leyenda, se presentó ante Augusto para cobrar la recompensa por su propia cabeza.</p>` 
+            },
+            { 
+                id: 'mod', 
+                icon: '🏰', 
+                label: 'Edad Media', 
+                title: 'Las Cuatro Villas de la Costa', 
+                text: `<p>San Vicente, Santander, Laredo y Castro Urdiales formaron la Hermandad de las Cuatro Villas, una potencia naval clave para la Corona de Castilla en la Reconquista y el comercio europeo.</p>
+                       <p>En el interior, el <strong>Beato de Liébana</strong> escribió sus Comentarios al Apocalipsis en el Monasterio de Santo Toribio, lugar que hoy conserva el Lignum Crucis, el trozo más grande de la cruz de Cristo.</p>` 
+            },
+            { 
+                id: 'aut', 
+                icon: '📜', 
+                label: 'Comunidad Autónoma', 
+                title: 'Estatuto de Autonomía de 1981', 
+                text: `<p>Tras siglos de pertenencia a la Castilla la Vieja como Provincia de Santander, el sentimiento regionalista impulsó la creación de una autonomía uniprovincial bajo el nombre histórico de <strong>Cantabria</strong>.</p>
+                       <p>Hoy es una comunidad moderna que protege sus raíces lingüísticas (el cántabro o montañés) y su rico ecosistema natural.</p>` 
+            }
+        ];
+
+        function renderTimeline() {
+            const nav = document.getElementById('timeline-nav');
+            nav.innerHTML = '';
+            historyData.forEach((item, idx) => {
+                const b = document.createElement('button');
+                b.className = 'px-6 py-5 border-2 rounded-2xl text-base bg-white mb-2 font-black transition-all hover:bg-emerald-50 text-left flex items-center gap-4 flex-shrink-0 md:w-full';
+                b.innerHTML = `<span>${item.icon}</span> <span>${item.label}</span>`;
+                b.onclick = () => {
+                    const contentArea = document.getElementById('timeline-content');
+                    contentArea.classList.add('opacity-0');
+                    setTimeout(() => {
+                        document.getElementById('tl-icon').textContent = item.icon;
+                        document.getElementById('tl-title').textContent = item.title;
+                        document.getElementById('tl-text').innerHTML = item.text;
+                        contentArea.classList.remove('opacity-0');
+                    }, 300);
+                    
+                    document.querySelectorAll('#timeline-nav button').forEach(btn => btn.classList.remove('border-emerald-600', 'bg-emerald-50', 'text-emerald-800'));
+                    b.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-800');
+                };
+                nav.appendChild(b);
+                if (idx === 0) b.click();
+            });
+        }
+
+        // Expanded Tourism Data
+        const tourismData = [
+            { name: 'Sardinero', category: 'veraneo', icon: '🏖️', desc: 'Elegancia belle époque con el Gran Casino y el Palacio de la Magdalena.' },
+            { name: 'Picos de Europa', category: 'naturaleza', icon: '🏔️', desc: 'El teleférico de Fuente Dé te sube a 1.823m para ver glaciares y caliza.' },
+            { name: 'Santillana del Mar', category: 'cultura', icon: '⛪', desc: 'Colegiata románica y calles empedradas. Ciudad detenida en el tiempo.' },
+            { name: 'Comillas', category: 'cultura', icon: '🏛️', desc: 'Sede del Palacio de Sobrellano y el Capricho de Gaudí.' },
+            { name: 'Parque Cabárceno', category: 'naturaleza', icon: '🦒', desc: 'Animales de los cinco continentes en semilibertad en una antigua mina.' },
+            { name: 'Santoña', category: 'veraneo', icon: '🏭', desc: 'Puerto pesquero famoso por sus anchoas y el Faro del Caballo.' },
+            { name: 'Potes', category: 'cultura', icon: '🏘️', desc: 'Corazón de Liébana, rodeada de montañas y famosa por su orujo.' },
+            { name: 'Costa Quebrada', category: 'naturaleza', icon: '🗿', desc: 'Geología viva con acantilados y urros espectaculares cerca de Liencres.' },
+            { name: 'Bárcena Mayor', category: 'cultura', icon: '🛖', desc: 'Uno de los pueblos más antiguos de España, en pleno Parque del Saja.' }
+        ];
+
+        function renderTourism(filterCat) {
+            const grid = document.getElementById('tour-grid');
+            grid.innerHTML = '';
+            const filtered = filterCat === 'all' ? tourismData : tourismData.filter(i => i.category === filterCat);
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-stone-50 rounded-2xl p-8 border border-stone-200 hover:border-emerald-600 hover:shadow-lg transition-all group content-align';
+                card.innerHTML = `
+                    <div class="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">${item.icon}</div>
+                    <h3 class="font-black text-stone-800 text-xl mb-3">${item.name}</h3>
+                    <p class="text-stone-600 leading-relaxed">${item.desc}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const filterBtns = document.querySelectorAll('#tour-filters button');
+        filterBtns.forEach(btn => {
+            btn.onclick = (e) => {
+                filterBtns.forEach(b => b.classList.replace('tab-active', 'tab-inactive'));
+                e.target.classList.replace('tab-inactive', 'tab-active');
+                renderTourism(e.target.getAttribute('data-filter'));
+            };
+        });
+
+        // Chart with realistic data
+        function initChart() {
+            const ctx = document.getElementById('populationChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Santander', 'Torrelavega', 'Castro U.', 'Camargo', 'Piélagos', 'Laredo'],
+                    datasets: [{ 
+                        label: 'Población (mil)', 
+                        data: [172.5, 51.2, 33.1, 30.5, 26.3, 11.0], 
+                        backgroundColor: '#059669', 
+                        borderRadius: 12,
+                        hoverBackgroundColor: '#10b981'
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#e5e7eb' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } } 
+                }
+            });
+        }
+
+        function toggleAccordion(id, iconId) {
+            const el = document.getElementById(id);
+            const ic = document.getElementById(iconId);
+            const isOpen = !el.classList.contains('hidden');
+            if (isOpen) {
+                el.classList.add('hidden');
+                ic.textContent = '+';
+            } else {
+                el.classList.remove('hidden');
+                ic.textContent = '-';
+            }
+        }
+
+        window.onload = () => {
+            renderTimeline();
+            renderTourism('all');
+            initChart();
+            reveal(); // Carga inicial de elementos visibles
+        };
+    </script>
+</body>
+</html>
